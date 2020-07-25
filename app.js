@@ -1,45 +1,55 @@
-const axios = require('axios')
+const axios = require("axios");
 // 导入WebSocket模块:
-const WebSocket = require('ws');
+const WebSocket = require("ws");
 
 // 引用Server类:
 const WebSocketServer = WebSocket.Server;
 
 // 实例化:
 const wss = new WebSocketServer({
-    port: 9898
+  port: 9898,
 });
 
-let data;
 function fetchIndexes(callback) {
-    let intervalId = axios.get('https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&fields=f2,f3,f4,f12,f14&secids=1.000001').then(res => {
-        // console.log('结果', res)
-        callback(res.data.data.diff)
-    })
+  const url =
+    `https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&fields=f2,f3,f4,f12,f14&secids=1.000001,0.399006,100.HSI&_=` +
+    new Date().getTime();
+  axios.get(url).then((res) => {
+    // console.log("请求结果");
+    callback(res.data.data.diff);
+  });
 }
 
-wss.broadcast = function broadcast() {
-    wss.clients.forEach(function each(client) {
-        if (client.readyState == WebSocket.OPEN) {
-            fetchIndexes((data) => { console.log(data); client.send(JSON.stringify(data)) })
-            client.send('我是广播')
-        }
-    })
-}
+// wss.broadcast = function broadcast() {
+//   wss.clients.forEach(function each(client) {
+//     if (client.readyState == WebSocket.OPEN) {
+//       fetchIndexes((data) => {
+//         console.log(data);
+//         client.send(JSON.stringify(data));
+//       });
+//       client.send("我是广播");
+//     }
+//   });
+// };
 
-wss.on('connection', function (ws) {
-    console.log(`[SERVER] connection()`)
-    ws.on('message', function (mesg) {
-        console.log(typeof mesg)
-        // fetchIndexes(sendmsg)
-
-        console.log(`[SERVER] Received: ${mesg}`)
-        // ws.send(`ECHO: ${mesg}`, (err)=> {
-        //     if(err) {
-        //         console.log(`[SERVER] error: ${err}`)
-        //     }
-        // })
-        // ws.send('我是推送')
-    })
-    wss.broadcast()
-})
+let intervalId;
+let tempData;
+wss.on("connection", function (ws) {
+    console.log(ws)
+  ws.on("message", function (mesg) {
+    console.log(mesg);
+    if (mesg === "jayGao") {
+      // 暗号正确
+      intervalId = setInterval(function () {
+        fetchIndexes((data) => {
+          const indexesData = JSON.stringify(data);
+          if (tempData != indexesData) {
+            ws.send(indexesData);
+          }
+          tempData = indexesData;
+        });
+      }, 2000);
+    }
+  });
+  // wss.broadcast();
+});
