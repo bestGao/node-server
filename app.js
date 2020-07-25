@@ -35,9 +35,8 @@ function fetchIndexes(callback) {
 let intervalId;
 let tempData;
 wss.on("connection", function (ws) {
-    console.log(ws)
   ws.on("message", function (mesg) {
-    console.log(mesg);
+    console.log("客户端传来的数据：", mesg);
     if (mesg === "jayGao") {
       // 暗号正确
       intervalId = setInterval(function () {
