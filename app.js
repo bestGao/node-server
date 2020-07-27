@@ -1,21 +1,17 @@
 const axios = require("axios");
-// 导入WebSocket模块:
 const WebSocket = require("ws");
 
-// 引用Server类:
 const WebSocketServer = WebSocket.Server;
 
-// 实例化:
 const wss = new WebSocketServer({
   port: 9898,
 });
 
-function fetchIndexes(callback) {
+function fetchIndexes (callback) {
   const url =
     `https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&fields=f2,f3,f4,f12,f14&secids=1.000001,0.399006,100.HSI&_=` +
     new Date().getTime();
   axios.get(url).then((res) => {
-    // console.log("请求结果");
     callback(res.data.data.diff);
   });
 }
@@ -35,8 +31,7 @@ wss.on("connection", function (ws) {
           }
           tempData = indexesData;
         });
-      }, 2000);
+      }, 10000);
     }
   });
-  // wss.broadcast();
 });
