@@ -20,18 +20,6 @@ function fetchIndexes(callback) {
   });
 }
 
-// wss.broadcast = function broadcast() {
-//   wss.clients.forEach(function each(client) {
-//     if (client.readyState == WebSocket.OPEN) {
-//       fetchIndexes((data) => {
-//         console.log(data);
-//         client.send(JSON.stringify(data));
-//       });
-//       client.send("我是广播");
-//     }
-//   });
-// };
-
 let intervalId;
 let tempData;
 wss.on("connection", function (ws) {
