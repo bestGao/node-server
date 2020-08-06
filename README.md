@@ -6,7 +6,7 @@
 
 ```javascript
 docker images
-docker build -t extension-server .
+docker build -t extension-server . // 使用 Dockerfile 创建镜像
 docker run -p 9966:9898 -d extension-server // 容器内部9898端口映射到主机的9966端口
 docker ps // list containers
 docker logs <container id> // Print app output
