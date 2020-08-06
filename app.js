@@ -50,7 +50,7 @@ wss.on("connection", function (ws) {
           }
           tempData = indexesData;
         });
-      }, 1 * 1000);
+      }, 10 * 1000);
     }
   });
 });
