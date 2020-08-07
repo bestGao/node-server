@@ -5,10 +5,10 @@ const WebSocket = require("ws");
 const WebSocketServer = WebSocket.Server;
 
 const wss = new WebSocketServer({
-  port: 9898
+  port: 9898  // 9966 // docker时: 9898
 });
 
-function fetchIndexes (callback) {
+function fetchIndexes(callback) {
   const curHours = new Date().getHours();
   if (curHours > 15) {
     console.log('成功')
@@ -44,7 +44,7 @@ wss.on("connection", function (ws) {
       // 暗号正确
       intervalId = setInterval(function () {
         fetchIndexes((data) => {
-          const curTime = new Date().toLocaleTimeString()
+          const curTime = new Date().toLocaleTimeString('en-US',{timeZone:"Asia/ShangHai"})
           const originData = { fundArray: data, curTime }
           const indexesData = JSON.stringify(originData);
           if (tempData != indexesData) {
