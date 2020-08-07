@@ -5,13 +5,14 @@ const WebSocket = require("ws");
 const WebSocketServer = WebSocket.Server;
 
 const wss = new WebSocketServer({
-  port: 9898  // 9966 // docker时: 9898
+  port: 9966  // 9966 // docker时: 9898
 });
 
 function fetchIndexes(callback) {
-  const curHours = new Date().getHours();
-  if (curHours > 15) {
-    console.log('成功')
+  const curHours = new Date().getHours('en-US',{timeZone:"Asia/ShangHai"});
+  console.log(curHours, curHours >= 15)
+  if (curHours >= 15) {
+    // console.log('成功')
     // 下午三点后模拟数据
     mockArray.forEach(function (dItem) {
       if (Math.random() > 0.5) {
@@ -39,7 +40,7 @@ let intervalId;
 let tempData;
 wss.on("connection", function (ws) {
   ws.on("message", function (mesg) {
-    console.log("客户端传来的数据：", mesg);
+    // console.log("客户端传来的数据：", mesg);
     if (mesg === "jayGao") {
       // 暗号正确
       intervalId = setInterval(function () {
