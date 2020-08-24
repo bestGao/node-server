@@ -10,7 +10,6 @@ const wss = new WebSocketServer({
 
 function fetchIndexes(callback) {
   const curHours = new Date().getHours('en-US',{timeZone:"Asia/ShangHai"});
-  console.log(curHours, curHours >= 15)
   if (curHours >= 15) {
     // console.log('成功')
     // 下午三点后模拟数据
@@ -39,8 +38,9 @@ function fetchIndexes(callback) {
 let intervalId;
 let tempData;
 wss.on("connection", function (ws) {
+  console.log('ws服务器')
   ws.on("message", function (mesg) {
-    // console.log("客户端传来的数据：", mesg);
+    console.log("客户端传来的数据：", mesg);
     if (mesg === "jayGao") {
       // 暗号正确
       intervalId = setInterval(function () {
