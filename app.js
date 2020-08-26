@@ -37,7 +37,7 @@ function fetchIndexes(callback) {
 
 let intervalId;
 let tempData;
-wss.on("connection", function (ws) {
+wss.on("connection", function (ws, req) {
   console.log('ws服务器')
   ws.on("message", function (mesg) {
     console.log("客户端传来的数据：", mesg);
