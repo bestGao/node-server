@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "flashJS": "nodemon node_fsps.js",
-    "start": "nodemon app.js",
+    "start": "pm2 start app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "express": "^4.17.1",
+    "pm2": "^4.4.1",
     "policyfile": "0.0.6",
     "socket.io": "^2.3.0",
     "ws": "^7.3.1"
