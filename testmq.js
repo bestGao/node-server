@@ -12,36 +12,43 @@ async function producer() {
   // 获取通道
   const channel = await connection.createChannel();
   // 声明参数
-  const exchangeName = "direct_exchange_name";
+  const exchangeName = "real_time_charging";
   const routingKey = "direct_routingKey";
 
   const msg = {
-    cid: 0,
-    plate_number: `浙B888`,
-    plate_number_type: '黄色',
+    "parking_order_id": 12, // 停车记录ID
+    "parking_flow_id": 2,
+    "vehicle_lane_id": 1,
+    "cid": 0,
+    "plate_number": `浙B888`,
+    "plate_number_type": '黄绿色',
     "charging_car_type_id": 14,
-    "car_length": "479",
+    "car_length": 479,
     "white_list": 1,
-    vehicle_lane_id: 1, // 通道ID
-    "in_parking_date": 1602679530,
-    "out_parking_date": 1602679630,
+    "in_parking_date": 16026791138,
+    "out_parking_date": 16026795138,
     "amount": 0,
-    parking_flow_id: 2,
-    needMark: false,
-    paid: true
+    replenish_flag: 1,
+    status: 'finish'
   };
   // 交换机
-  await channel.assertExchange(exchangeName, "direct", {
+  await channel.assertExchange(exchangeName, "fanout", {
     durable: false,
   });
   // 发送消息
   setInterval(async () => {
-    await channel.publish(exchangeName, routingKey, Buffer.from(JSON.stringify(msg)));
+    await channel.publish(exchangeName, '', Buffer.from(JSON.stringify(msg)));
     msg.cid += 1
     msg.amount = (Math.random() * 100).toFixed()
     msg.plate_number = `浙${(Math.random() * 1000).toFixed()}`
-    msg.vehicle_lane_id = msg.vehicle_lane_id == 2 ? 1 : 2
-  }, 6000);
+    msg.vehicle_lane_id = msg.vehicle_lane_id == 1 ? 2 : 1
+    msg.status = msg.status === 'unpay' ? 'finish' : 'unpay'
+    msg.out_parking_date = msg.out_parking_date + 10
+    msg.replenish_flag = msg.vehicle_lane_id === 2 ? 1 : 0
+  }, 1000);
+  setTimeout(() => {
+    msg.replenish_flag = msg.replenish_flag ? 0 : 1
+  }, 99999999);
   // 关闭链接
   // await channel.close();
   // await connection.close();
